@@ -16,8 +16,8 @@ ExpiresByType application/x-icon "access plus 3 months"
 # FIN EXPIRAR CACHE
 <IfModule mod_rewrite.c>
 RewriteEngine on
-RewriteCond %{HTTP_HOST} ^idenframework.com/ [NC]
-RewriteRule ^(.*)$ http://www.idenframework.com/$1 [L,R=301]
+RewriteCond %{HTTP_HOST} ^easybilling.com/ [NC]
+RewriteRule ^(.*)$ http://www.easybilling.com/$1 [L,R=301]
 </IfModule>
 RewriteEngine On
 
@@ -25,7 +25,7 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-l
 
-RewriteRule ^(.+)$ index.php?videnframework=$1 [QSA,L]
+RewriteRule ^(.+)$ index.php?veasybilling=$1 [QSA,L]
 
 
 <FilesMatch "\.(php|htm|html|css|js)$">
