@@ -7,7 +7,8 @@ class indexController extends IdEnController
 			}
 			
 		public function index(){
-            $this->vView->visualizar('index');
+            //$this->vView->visualizar('index');
+            $this->redirect('systemBilling');
 			}       
 	}
 ?>
