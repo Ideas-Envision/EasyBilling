@@ -57,6 +57,34 @@ abstract class IdEnController
 						exit;						
 					}
 			}
+    
+        /* BEGIN GLOBAL FUNCTIONS */
+        public function stringInverted($vStringNormal){
+            $vStringNormal = (string) $vStringNormal;
+            $vStringInverted = '';
+            
+            for ($i=strlen($vStringNormal); $i >= 0; $i--){
+              $vStringInverted .= $vStringNormal[$i];
+            }
+            
+            return $vStringInverted;
+        }
+    
+        public function separateDigitsAndAddNumber($vNumberToSeparate, $vNumberToAdd){
+            $vNumberToSeparate = (float) $vNumberToSeparate;
+            $vNumberToAdd = (float) $vNumberToAdd;
+            
+            $x = (string) $vNumberToSeparate;
+            
+            $vNewVal = '';
+            
+            for($i = 0;$i < strlen($x); $i++){ 
+                $vNewVal .= $x[$i] + $vNumberToAdd;
+            }
+            
+            return $vNewVal;
+        }    
+        /* END GLOBAL FUNCTIONS */
 						
 	}
 
