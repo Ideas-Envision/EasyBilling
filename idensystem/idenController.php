@@ -83,6 +83,25 @@ abstract class IdEnController
             }
             
             return $vNewVal;
+        }
+    
+        public function roundUp($value){        
+            //reemplaza (,) por (.)        
+            $value2 = str_replace(',','.',$value);
+            //redondea a 0 decimales        
+            return round($value2, 0, PHP_ROUND_HALF_UP);
+        }
+
+        public function validateNumber($value){
+            if(!preg_match('/^[0-9,.]+$/', $value)){
+                throw new InvalidArgumentException(sprintf("Error! Valor restringido a número, %s no es un número.",$value));
+            }
+        }
+
+        public function validateDosageKey($value){
+            if(!preg_match('/^[A-Za-z0-9=#()*+-_\@\[\]{}%$]+$/', $value)){
+                throw new InvalidArgumentException(sprintf("Error! llave de dosificación,<b> %s </b>contiene caracteres NO permitidos.",$value));
+            }
         }    
         /* END GLOBAL FUNCTIONS */
 						
