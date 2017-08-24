@@ -12,7 +12,7 @@ class IdEnInitialize
 				$vRouteController = ROOT_APPLICATION.'controllers'.DIR_SEPARATOR.$vController.'.php';
 				$vMethod = $vRequest->getMethod();
 				$vArgs = $vRequest->getArgs();
-							
+
 				if(is_readable($vRouteController))
 					{
 						require_once $vRouteController;

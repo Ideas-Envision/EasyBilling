@@ -9,12 +9,12 @@ define('DEFAULT_SESSION_USER_TIME',60);
 define('DEFAULT_HASH_KEY','2V=4[*Z=W]i6L=:\-IdEn');//http://clavesegura.org/
 
 define('DEFAULT_USER_REGISTER','user');
-define('DEFAULT_USER_AUTHENTICATE','vAuthenticatedIdEnUser');
+define('DEFAULT_USER_AUTHENTICATE','vAuthenticatedEasyBillingUser');
 
-/*define('DEFAULT_DB_HOST','localhost');
+define('DEFAULT_DB_HOST','localhost');
 define('DEFAULT_DB_ROOT_USER','root');
 define('DEFAULT_DB_ROOT_PASS','vertrigo');
-define('DEFAULT_DB_NAME','db_idenframework');*/
+define('DEFAULT_DB_NAME','db_easybilling');
 
 define('DEFAULT_DB_CHARSET','utf8');
 ?>
