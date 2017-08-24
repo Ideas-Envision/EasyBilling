@@ -3,7 +3,7 @@
 class errorController extends IdEnController
 	{		
 		public function __construct(){
-                parent::__construct();
+                parent::__construct();     
 			}
 			
 		public function index(){
@@ -16,6 +16,10 @@ class errorController extends IdEnController
 
 		public function view(){
             $this->vView->visualizar('view');
-			}        
+			} 
+    
+		public function sessionTimeExpired(){
+            $this->vView->visualizar('sessionTimeExpired');
+			}     
 	}
 ?>
