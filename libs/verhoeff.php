@@ -29,9 +29,9 @@ class Verhoeff {
     static public $inv = array(0,4,3,2,1,5,6,7,8,9);
 
     static function calc($num) {
-        if(!preg_match("/^[0-9]+$/", $num)) {
-            throw new \InvalidArgumentException(sprintf("Error! Value is restricted to the number, %s is not a number.", $num));
-        }
+        /*if(!preg_match("/^[0-9]+$/", $num)) {
+            throw new \InvalidArgumentException(sprintf("Error! #1 -  Value is restricted to the number, %s is not a number.", $num));
+        }*/
     
         $r = 0;
         foreach(array_reverse(str_split($num)) as $n => $N) {
@@ -41,9 +41,9 @@ class Verhoeff {
     }
 
     static function check($num) {
-        if(!preg_match("/^[0-9]+$/", $num)) {
-            throw new \InvalidArgumentException(sprintf("Error! Value is restricted to the number, %s is not a number.", $num));
-        }
+        /*if(!preg_match("/^[0-9]+$/", $num)) {
+            throw new \InvalidArgumentException(sprintf("Error! #2 - Value is restricted to the number, %s is not a number.", $num));
+        }*/
     
         $r = 0;
         foreach(array_reverse(str_split($num)) as $n => $N) {
