@@ -43,9 +43,9 @@ class usersModel extends IdEnModel
 				$vResultUserAccountStatus->close();
 			}        
     
-		public function getUserName($vUserName)
+		public function getUserName($vUserCode)
 			{
-                $vUserName = (string) $vUserName;
+                $vUserCode = (string) $vUserCode;
             
 				$vResultUserName = $this->vDataBase->query("SELECT
                                                                 tb_easybilling_users.c_username

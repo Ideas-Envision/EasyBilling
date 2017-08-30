@@ -46,6 +46,8 @@
                                                 echo '<br/>';
                                                 echo 'DEFAULT_USER_AUTHENTICATECode: '.IdEnSession::getSession(DEFAULT_USER_AUTHENTICATE.'Code');
                                                 echo '<br/>';
+                                                echo 'DEFAULT_USER_AUTHENTICATEUserName: '.IdEnSession::getSession(DEFAULT_USER_AUTHENTICATE.'UserName');
+                                                echo '<br/>';                                        
                                                 echo 'DEFAULT_USER_AUTHENTICATEEmail: '.IdEnSession::getSession(DEFAULT_USER_AUTHENTICATE.'Email');
                                                 echo '<br/>';
                                                 echo 'DEFAULT_USER_AUTHENTICATERole: '.IdEnSession::getSession(DEFAULT_USER_AUTHENTICATE.'Role');

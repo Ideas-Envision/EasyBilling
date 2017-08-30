@@ -17,11 +17,13 @@ class IdEnView  extends IdEnController
 		public function visualizar($vNameView, $vItem = FALSE)
 			{
 
+				$vParamsViewQRCode = array('root_qrcode_img'=>BASE_VIEW_URL.'views/backend/systemBilling/imagesqrcode/');
+            
 				$vParamsViewBootstrap = array(
                                         'root_bootstrap_css'=>BASE_VIEW_URL.'views/layout/'.DEFAULT_VIEW_LAYOUT.'/bootstrap/css/',
                                         'root_bootstrap_fonts'=>BASE_VIEW_URL.'views/layout/'.DEFAULT_VIEW_LAYOUT.'/bootstrap/fonts/',
                                         'root_bootstrap_js'=>BASE_VIEW_URL.'views/layout/'.DEFAULT_VIEW_LAYOUT.'/bootstrap/js/'
-									 );
+									 );            
                 
 				$vParamsViewFrontEndLayout = array(
                                         'root_frontend_menu_array'=>$arrayTotalMenu,

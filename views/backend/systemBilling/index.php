@@ -30,181 +30,54 @@
                             <p>Esta es la página de incio del sistema de facturación del sistema EasyBilling</p>
                         </div>
                         
-
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="portlet light bordered">
                                     <div class="portlet-title">
-                                        <div class="caption">
-                                            <i class="icon-bubble font-green-sharp"></i>
-                                            <span class="caption-subject font-green-sharp bold uppercase">Emisión de Factura Nueva</span>
+                                        <div class="caption font-dark">
+                                            <i class="icon-settings font-dark"></i>
+                                            <span class="caption-subject bold uppercase">Facturas Generadas</span>
                                         </div>
+                                        <!--<div class="tools"> </div>-->
                                     </div>
-                                    <div class="portlet-body form">
-                                        <form role="form" id="systembilling-form-datainvoice">
-                                            <div class="form-body">
-                                                <div class="form-group">
-                                                    <label>Datos Fijos</label><hr>
-                                                    <div class="row">
-                                                        <div class="col-md-3">
-                                                            <label>NIT</label>
-                                                            <div class="input-icon right margin-top-10">
-                                                                <i class="fa fa-check"></i>
-                                                                <input type="text" class="form-control" placeholder="4826454016" disabled>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-5">
-                                                            <label>Nro. Autorización</label>
-                                                            <div class="input-icon right margin-top-10">
-                                                                <i class="fa fa-check"></i>
-                                                                <input type="text" class="form-control" placeholder="" name="vNumAutorization">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <label>Nro. Factura</label>
-                                                            <div class="input-icon right margin-top-10">
-                                                                <i class="fa fa-check"></i>
-                                                                <input type="text" class="form-control" placeholder=""  name="vNumBilling">
-                                                            </div>
-                                                        </div>                                                        
-                                                    </div>                                                    
-                                                </div>
-                                                <div class="form-group">
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <label>Lugar de Emisión</label>
-                                                            <div class="input-icon right margin-top-10">
-                                                                <i class="fa fa-check"></i>
-                                                                <input type="text" class="form-control" placeholder="La Paz, Bolivia" disabled>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <label>Fecha de Emisión</label>
-                                                            <div class="input-icon right margin-top-10">
-                                                                <i class="fa fa-check"></i>
-                                                                <input type="text" class="form-control" placeholder="" name="vDateTransactionBilling">
-                                                            </div>
-                                                        </div>
-                                                    </div>                                                    
-                                                </div>                                                
-                                                <div class="form-group">
-                                                    <label>Domicilio Fiscal</label>
-                                                    <div class="input-icon right margin-top-10">
-                                                        <i class="fa fa-check"></i>
-                                                        <textarea class="form-control" placeholder="Casa Matriz Calle Pinilla Nro. 2588, Edificio Arcadia Piso Mezzanine Depto. 109B Zona/Barrio: San Jorge Teléfonos: 2430880 - 78795415, La Paz, Bolivia" disabled style="resize:none"></textarea>
-                                                    </div>
-                                                </div>
-                                                
-                                                <label>Datos Necesarios</label><hr>
-                                                
-                                                <div class="form-group">
-                                                    <div class="row">
-                                                        <div class="col-md-5">
-                                                            <label>Actividad Económica</label>
-                                                            <select class="form-control margin-top-10">
-                                                                <option>Seleccionar</option>
-                                                                <option>Alquiler de Bienes raices</option>
-                                                                <option>Servicios Informáticos</option>
-                                                                <option>Publicidad</option>
-                                                                <option>Educación</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <label>Documento</label>
-                                                            <div class="input-icon right margin-top-10">
-                                                                <i class="fa fa-check"></i>
-                                                                <input type="text" class="form-control" placeholder="Tipo de documento" disabled>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-3">
-                                                            <label>Periodo Emisión</label>
-                                                            <div class="input-icon right margin-top-10">
-                                                                <i class="fa fa-check"></i>
-                                                                <input type="text" class="form-control" placeholder="<?Php echo date('m'); ?>" disabled>
-                                                            </div>
-                                                        </div>                                                        
-                                                    </div>                                                    
-                                                </div>
-                                                
-                                                <div class="form-group">
-                                                    <div class="row">
-                                                        <div class="col-md-8">
-                                                            <label>Nombre para emisión de factura</label>
-                                                            <div class="input-icon right margin-top-10">
-                                                                <i class="fa fa-check"></i>
-                                                                <input type="text" class="form-control" placeholder="Nombre del cliente">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <label>NIT</label>
-                                                            <div class="input-icon right margin-top-10">
-                                                                <i class="fa fa-check"></i>
-                                                                <input type="text" class="form-control" placeholder="" name="vIDClient">
-                                                            </div>
-                                                        </div>
-                                                    </div>                                                    
-                                                </div>                                                                                          
-
-                                                <div class="col-md-12">
-                                                    <div class="table-toolbar">
-                                                        <div class="row">
-                                                            <div class="col-md-6">
-                                                                <div class="btn-group">
-                                                                    <button id="sample_editable_1_new" class="btn green"> Agregar Nuevo
-                                                                        <i class="fa fa-plus"></i>
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <table class="table table-striped table-hover table-bordered" id="sample_editable_1">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Detalle</th>
-                                                                <th>Precio Unitario</th>
-                                                                <th>Edit</th>
-                                                                <th>Delete</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td><a class="edit" href="javascript:;">Modificar</a></td>
-                                                                <td><a class="delete" href="javascript:;">Eliminar</a></td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>                                                
-                                                
-
-                                                <div class="form-group">
-                                                    <div class="row">
-                                                        <div class="col-md-9">
-                                                            <label>Monto Total Literal</label>
-                                                            <div class="margin-top-10">
-                                                                <input type="text" class="form-control" placeholder="" disabled>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-3">
-                                                            <label>Monto Total Numeral</label>
-                                                            <div class="margin-top-10">
-                                                                <input type="text" class="form-control" placeholder="" name="vAmountBilling">
-                                                            </div>
-                                                        </div>
-                                                    </div>                                                    
-                                                </div>                                                
-
-                                            </div>
-                                            <div class="form-actions right">
-                                                <button type="button" class="btn default">Cancel</button>
-                                                <button type="submit" class="btn green">Submit</button>
-                                            </div>
-                                        </form>
+                                    <div class="portlet-body">
+                                        <table class="table table-striped table-bordered table-hover dt-responsive" width="100%" id="sample_1">
+                                            <thead>
+                                                <tr>
+                                                    <th class="all">Nº</th>
+                                                    <th class="none">Nº Factura</th>
+                                                    <th class="none">Nit</th>
+                                                    <th class="min-tablet">Nombre</th>
+                                                    <th class="none">Fecha Facturación</th>
+                                                    <th class="all">Monto Bs</th>
+                                                    <th class="all">Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?Php                                               
+                                                   if(isset($this->vDataBilling) && count($this->vDataBilling)):
+                                                        $vCount = 1;
+                                                        for($i=0;$i<count($this->vDataBilling);$i++):
+                                                            echo '<tr>';
+                                                                echo '<td>'.$vCount.'</td>';
+                                                                echo '<td>'.$this->vDataBilling[$i]['n_billingnumber'].'</td>';
+                                                                echo '<td>'.$this->vDataBilling[$i]['c_namenit'].'</td>';
+                                                                echo '<td>'.$this->vDataBilling[$i]['c_nit'].'</td>';
+                                                                echo '<td>'.$this->vDataBilling[$i]['d_billingdate'].'</td>';
+                                                                echo '<td>'.$this->vDataBilling[$i]['n_totalamount'].'</td>';
+                                                                echo '<td><a href="'.BASE_VIEW_URL.'systemBilling/invoiceLetter/'.$this->vDataBilling[$i]['n_billingnumber'].'" class="btn green" ><i class="fa fa-print"></i> Visualizar </a></td>';
+                                                            ++$vCount;
+                                                        endfor;
+                                                    endif;
+                                                ?>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6 "></div>
+                            <div class="col-md-6 ">
+                                <a href="#" class="btn red" id="btnNewBilling"><i class="fa fa-print"></i> Nueva Factura </a>
+                            </div>
                         </div>                        
                     </div>
                     <!-- END CONTENT BODY -->
@@ -272,7 +145,7 @@
         <script src="<?Php echo $vParamsViewBackEndLayout['root_backend_global_plugins']; ?>jquery.blockui.min.js" type="text/javascript"></script>
         <!-- END CORE PLUGINS -->
         <!-- BEGIN PAGE LEVEL PLUGINS -->
-        <script src="<?Php echo $vParamsViewBackEndLayout['root_backend_global_scripts']; ?>datatable.min.js" type="text/javascript"></script>
+        <script src="<?Php echo $vParamsViewBackEndLayout['root_backend_global_scripts']; ?>datatable.js" type="text/javascript"></script>
         <script src="<?Php echo $vParamsViewBackEndLayout['root_backend_global_plugins']; ?>datatables/datatables.min.js" type="text/javascript"></script>
         <script src="<?Php echo $vParamsViewBackEndLayout['root_backend_global_plugins']; ?>datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
         <!-- END PAGE LEVEL PLUGINS -->
@@ -280,7 +153,7 @@
         <script src="<?Php echo $vParamsViewBackEndLayout['root_backend_global_scripts']; ?>app.min.js" type="text/javascript"></script>        
         <!-- END THEME GLOBAL SCRIPTS -->
         <!-- BEGIN PAGE LEVEL SCRIPTS -->
-        <script src="<?Php echo $vParamsViewBackEndLayout['root_backend_pages_scripts']; ?>table-datatables-editable.js" type="text/javascript"></script>
+        <script src="<?Php echo $vParamsViewBackEndLayout['root_backend_pages_scripts']; ?>table-datatables-responsive.js" type="text/javascript"></script>
         <!-- END PAGE LEVEL SCRIPTS -->
         <!-- BEGIN THEME LAYOUT SCRIPTS -->
         <script src="<?Php echo $vParamsViewBackEndLayout['root_backend_layouts_scripts']; ?>layout.min.js" type="text/javascript"></script>

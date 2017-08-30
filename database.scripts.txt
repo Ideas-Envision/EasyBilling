@@ -53,3 +53,77 @@ CREATE TABLE `tb_easybilling_profiles` (
   `d_datemod` datetime default NULL,
   PRIMARY KEY  (`n_codprofile`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+CREATE TABLE `tb_easybilling_autorizationcode` (
+  `n_codautorizationcode` int(11) NOT NULL auto_increment,
+  `c_autorizationcode` text collate utf8_spanish_ci,
+  `n_active` int(11) default NULL,
+  `c_usercreate` varchar(50) collate utf8_spanish_ci NOT NULL,
+  `d_datecreate` datetime default NULL,
+  `c_usermod` varchar(50) collate utf8_spanish_ci NOT NULL,
+  `d_datemod` datetime default NULL,
+  PRIMARY KEY  (`n_codautorizationcode`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+CREATE TABLE `tb_easybilling_dosingwrenchkey` (
+  `n_coddosingwrenchkey` int(11) NOT NULL auto_increment,
+  `c_dosingwrenchkey` text collate utf8_spanish_ci,
+  `n_active` int(11) default NULL,
+  `c_usercreate` varchar(50) collate utf8_spanish_ci NOT NULL,
+  `d_datecreate` datetime default NULL,
+  `c_usermod` varchar(50) collate utf8_spanish_ci NOT NULL,
+  `d_datemod` datetime default NULL,
+  PRIMARY KEY  (`n_coddosingwrenchkey`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+CREATE TABLE `tb_easybilling_billings` (
+  `n_codbilling` int(11) NOT NULL auto_increment,
+  `n_coduser` int(11) default NULL,
+  `n_coddosingwrenchkey` int(11) NOT NULL,
+  `n_codautorizationcode` int(11) NOT NULL,
+  `n_codclient` int(11) NOT NULL,
+  `n_branchoffice` int(11) default NULL,
+  `n_billingnumber` int(11) NOT NULL,
+  `d_billingdate` datetime default NULL,
+  `c_controlcode` text collate utf8_spanish_ci,
+  `c_qrcodename` text collate utf8_spanish_ci,
+  `n_active` int(11) default NULL,
+  `c_usercreate` varchar(50) collate utf8_spanish_ci NOT NULL,
+  `d_datecreate` datetime default NULL,
+  `c_usermod` varchar(50) collate utf8_spanish_ci NOT NULL,
+  `d_datemod` datetime default NULL,
+  PRIMARY KEY  (`n_codbilling`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+CREATE TABLE `tb_easybilling_billingdetail` (
+  `n_codbillingdetail` int(11) NOT NULL auto_increment,
+  `n_coduser` int(11) NOT NULL,
+  `n_codbilling` int(11) default NULL,
+  `n_service` int(11) default NULL,
+  `n_quantity` int(11) default NULL,
+  `c_billingdetail` text collate utf8_spanish_ci,
+  `n_amount` double(11,2) NOT NULL,
+  `n_active` int(11) default NULL,
+  `c_usercreate` varchar(50) collate utf8_spanish_ci NOT NULL,
+  `d_datecreate` datetime default NULL,
+  `c_usermod` varchar(50) collate utf8_spanish_ci NOT NULL,
+  `d_datemod` datetime default NULL,
+  PRIMARY KEY  (`n_codbillingdetail`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+CREATE TABLE `tb_easybilling_client` (
+  `n_codclient` int(11) NOT NULL auto_increment,
+  `c_name` text collate utf8_spanish_ci,
+  `c_lastname` text collate utf8_spanish_ci,
+  `c_namenit` text collate utf8_spanish_ci,
+  `c_nit` text collate utf8_spanish_ci,
+  `c_email` text collate utf8_spanish_ci,
+  `n_cellphone` int(11) default NULL,
+  `n_active` int(11) default NULL,
+  `c_usercreate` varchar(50) collate utf8_spanish_ci NOT NULL,
+  `d_datecreate` datetime default NULL,
+  `c_usermod` varchar(50) collate utf8_spanish_ci NOT NULL,
+  `d_datemod` datetime default NULL,
+  PRIMARY KEY  (`n_codclient`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+

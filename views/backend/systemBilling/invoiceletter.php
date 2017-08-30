@@ -1,4 +1,3 @@
-<?Php echo setlocale(LC_TIME, 'es_ES.UTF-8'); ?>
                 <!-- BEGIN CONTENT -->
                 <div class="page-content-wrapper">
                     <!-- BEGIN CONTENT BODY -->
@@ -26,23 +25,48 @@
                             <small>Sistema de Facturación Electrónica basada en requisitos del sistema de impuestos nacionales de Bolivia.</small>
                         </h1>
                         <!-- END PAGE TITLE-->
+                        
+                        <?Php                                               
+                           if(isset($this->vDataBilling) && count($this->vDataBilling)):                           
+                                for($i=0;$i<count($this->vDataBilling);$i++):
+                                    $vCodBilling = $this->vDataBilling[$i]['n_codbilling'];
+                                    $vCodUser = $this->vDataBilling[$i]['n_coduser'];
+                                    $vAutorizationcode = $this->vDataBilling[$i]['c_autorizationcode'];
+                                    $vNameNit = $this->vDataBilling[$i]['c_namenit'];
+                                    $vNit = $this->vDataBilling[$i]['c_nit'];
+                                    $vCodClient = $this->vDataBilling[$i]['n_codclient'];
+                                    $vBranchOffice = $this->vDataBilling[$i]['n_branchoffice'];
+                                    $vBillingNumber = $this->vDataBilling[$i]['n_billingnumber'];
+                                    $vBillingDate = $this->vDataBilling[$i]['d_billingdate'];
+                                    $vControlCode = $this->vDataBilling[$i]['c_controlcode'];
+                                    $vQRCodeName = $this->vDataBilling[$i]['c_qrcodename'];
+                                endfor;
+                            endif;
+                        ?>
+                        
                         <!-- END PAGE HEADER-->
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-8">
+                                <a href="<?Php echo BASE_VIEW_URL.'systemBilling/invoiceLetter/'.$vBillingNumber;?>" class="btn green" ><i class="fa fa-print"></i> Generar PDF </a>
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="row">
+                            <div class="col-md-8">
                                 <div class="invoice-content-2 bordered">
                                     <div class="row invoice-head">
-                                        <div class="col-md-3 col-xs-6">
+                                        <div class="col-md-4 col-xs-6">
                                             <div class="invoice-logo">
                                                 <img src="<?Php echo $vParamsViewBackEndLayout['root_backend_pages_css']; ?>squemas-invoice.png" class="img-responsive" alt="" />
                                                 <h1 class="uppercase">Factura Oficial</h1>
                                             </div>
                                         </div>
-                                        <div class="col-md-9 col-xs-6">
+                                        <div class="col-md-8 col-xs-6">
                                             <div class="row">
-                                                <div class="col-md-4 well pull-right text-right">
+                                                <div class="col-md-9 well pull-right text-right">
                                                     <strong>Nit</strong> 4826454016<br/>
-                                                    <strong>Nro. Factura</strong> <?Php echo $this->vNumBilling; ?><br/>
-                                                    <strong>Nro. de Autorización</strong> <?Php echo $this->vNumAutorization; ?><br/>
+                                                    <strong>Nro. Factura</strong> <?Php echo $vBillingNumber; ?><br/>
+                                                    <strong>Nro. de Autorización</strong> <?Php echo $vAutorizationcode; ?><br/>
                                                 </div>
                                             </div>                                            
                                             <div class="row">
@@ -67,17 +91,17 @@
                                     </div>
                                     <div class="row invoice-cust-add">
                                         
-                                        <div class="col-xs-3">
+                                        <div class="col-xs-12 col-md-6">
                                             <h2 class="invoice-title uppercase">Lugar y fecha de emisión</h2>
                                             <p class="invoice-desc">La Paz, <?Php echo strftime("%A, %d de %B de %Y", $this->vDateTransaction); ?></p>
                                         </div>
-                                        <div class="col-xs-6">
+                                        <div class="col-xs-12 col-md-4">
                                             <h2 class="invoice-title uppercase">Nombre Cliente</h2>
-                                            <p class="invoice-desc">Sergio Martín Alarcón Montero</p>
+                                            <p class="invoice-desc"><?Php echo $vNameNit; ?></p>
                                         </div>                                        
-                                        <div class="col-xs-3">
+                                        <div class="col-xs-12 col-md-2">
                                             <h2 class="invoice-title uppercase">NIT Cliente</h2>
-                                            <p class="invoice-desc"><?Php echo $this->vIDClient; ?></p>
+                                            <p class="invoice-desc"><?Php echo $vNit; ?></p>
                                         </div>
                                     </div>
                                     <div class="row invoice-body">
@@ -85,43 +109,59 @@
                                             <table class="table table-hover">
                                                 <thead>
                                                     <tr>
+                                                        <th class="invoice-title uppercase">Nº</th>
                                                         <th class="invoice-title uppercase">Cantidad</th>
                                                         <th class="invoice-title uppercase">Descripción</th>
-                                                        <th class="invoice-title uppercase text-center">Precio Unitario</th>
-                                                        <th class="invoice-title uppercase text-center">Precio Total</th>
+                                                        <th class="invoice-title uppercase text-center">Precio Unitario Bs.</th>
+                                                        <th class="invoice-title uppercase text-center">Precio Total Bs.</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
-                                                        <td class="text-center sbold">1</td>
-                                                        <td>
-                                                            <h3>Alquiler de espacios de trabajo</h3>
-                                                            <p>Sala de reuniones, 2 a 6 personas, 1 semana, 3 horas por día, de 9:00 am a 12:30 pm</p>
-                                                        </td>
-                                                        <td class="text-center sbold">80Bs</td>
-                                                        <td class="text-center sbold"><?Php echo $this->vAmountBilling; ?></td>
-                                                    </tr>
+                                                <?Php
+                                                    $vTotalItemAmount = 0;
+                                                    $vTotalBillingAmount = 0;
+                                                    if(isset($this->vDataBillingDetail) && count($this->vDataBillingDetail)):
+                                                        $vCount = 1;
+                                                        for($i=0;$i<count($this->vDataBillingDetail);$i++):
+                                                            $vTotalItemAmount = $this->vDataBillingDetail[$i]['n_quantity']*$this->vDataBillingDetail[$i]['n_amount'];
+                                                            echo '<tr>';
+                                                                echo '<td class="text-center sbold">'.$vCount.'</td>';
+                                                                echo '<td class="text-center sbold">'.$this->vDataBillingDetail[$i]['n_quantity'].'</td>';
+                                                                echo '<td>';
+                                                                    echo '<h3>Título del Servicio</h3>';
+                                                                    echo '<p>'.$this->vDataBillingDetail[$i]['c_billingdetail'].'</p>';
+                                                                echo '</td>';
+                                                                echo '<td class="text-center sbold">'.number_format($this->vDataBillingDetail[$i]['n_amount'], 2, '.', '').'</td>';
+                                                                echo '<td class="text-center sbold">'.number_format($vTotalItemAmount, 2, '.', '').'</td>';
+                                                            echo '</tr>';
+                                                            ++$vCount;
+                                                            $vTotalBillingAmount = $vTotalBillingAmount + $vTotalItemAmount;
+                                                        endfor;
+                                                    endif;
+                                                ?>
                                                 </tbody>
                                             </table>
                                         </div>
                                     </div>
                                     <div class="row invoice-subtotal">
-                                        <div class="col-xs-8">
+                                        <div class="col-xs-8 col-md-8">
                                             <h2 class="invoice-title uppercase">Monto total literal</h2>
-                                            <p class="invoice-desc"><?Php echo $this->vAmountBillingText; ?></p>
+                                            <p class="invoice-desc"><?Php echo $this->num2letras(number_format($vTotalBillingAmount, 2, '.', '')); ?></p>
                                         </div>                                        
-                                        <div class="col-xs-4">
-                                            <h2 class="invoice-title uppercase">Monto total numeral</h2>
-                                            <p class="invoice-desc grand-total"><?Php echo $this->vAmountBilling; ?></p>
+                                        <div class="col-xs-4 col-md-4">
+                                            <div class="pull-right">
+                                                <h2 class="invoice-title uppercase">Monto total numeral</h2>
+                                                <p class="invoice-desc grand-total"><?Php echo number_format($vTotalBillingAmount, 2, '.', ''); ?></p>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="row invoice-subtotal">                                        
-                                        <div class="col-md-4 invoice-text-2 well pull-left">
-                                            <strong>Código de control</strong> <?Php echo $this->formatControlCodeInvoice($this->vControlCodeString); ?><br/>
-                                            <strong>Fecha límite de emisión</strong> <?Php echo $this->vDateTransactionBilling; ?><br/>
+                                        <div class="col-md-6 invoice-text-2 well pull-left">
+                                            <strong>Código de control</strong> <?Php echo $this->formatControlCodeInvoice($vControlCode); ?><br/>
+                                            <strong>Fecha límite de emisión</strong> <?Php echo $vBillingDate; ?><br/>
                                         </div>
-                                        <div class="col-md-1 well pull-right">
-                                            <img src="<?Php echo $vParamsViewQRCode['root_qrcode_img'].$this->vQRCodeImage; ?>" class="img-responsive" alt="" />
+                                        <div class="col-md-2 well pull-right">
+                                            <img src="<?Php echo $vParamsViewQRCode['root_qrcode_img'].$vQRCodeName; ?>" class="img-responsive" alt="" />
                                         </div>                                        
                                     </div>
                                     
@@ -130,16 +170,9 @@
                                             <p>Esta factura contribuye al desarrollo del país, el uso ilícito de esta será sancionado de acuerdo a la ley.</p>
                                             <p>Ley Nº 453: El proveedor deberá suministrar el servicio en las modalidades y términos ofertados o convenidos.</p>
                                         </div>                                        
-                                    </div>                                    
-                                    
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                            <a class="btn btn-lg green-haze hidden-print uppercase print-btn" onclick="javascript:window.print();">Print</a>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6"></div>
                         </div>                        
                     </div>
                     <!-- END CONTENT BODY -->

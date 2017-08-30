@@ -1,9 +1,7 @@
 <?Php
 
 class systemBillingController extends IdEnController
-	{
-        private $vDosingWrenchKey = 'w[TXnSWw7E-3mna$KLY4$M@_hQhBtNhqKImvvqmhTr]A-j=]WMspNS5NI]gQp%WQ';
-    
+	{    
 		public function __construct(){
             
                 parent::__construct();
@@ -14,104 +12,204 @@ class systemBillingController extends IdEnController
                 } else {
                     IdEnSession::timeSession();
                 }
-                /* END VALIDATION TIME SESSION USER */            
+                /* END VALIDATION TIME SESSION USER */  
+            
+                $this->vUsersData = $this->LoadModel('users');
+                $this->vBillingData = $this->LoadModel('billing');
 			}
     
         private function getDosingWrenchKey(){
-            return $this->vDosingWrenchKey;
+                return $this->vBillingData->getDataDosingWrenchKey();
+            }
+    
+        private function getAutorizationcode(){
+                return $this->vBillingData->getDataAutorizationcode();
             }    
     
 		public function index(){
+                $this->vView->vUserNamesComplete = $this->vUsersData->getUserNamesComplete(IdEnSession::getSession(DEFAULT_USER_AUTHENTICATE.'Code'));
+
+                $this->vView->vDataBilling = $this->vBillingData->getUserDataBillings(IdEnSession::getSession(DEFAULT_USER_AUTHENTICATE.'Code'));
             
-            $this->vView->visualizar('index');
+                $this->vView->visualizar('index');
+			}
+    
+		public function registerNewBilling(){
+                if($_SERVER['REQUEST_METHOD'] == 'POST'){
+                    
+                    $vCodDosingWrenchKey = $this->vBillingData->getCodeDosingWrenchKey();
+                    $vCodAutorizationcode = $this->vBillingData->getCodeAutorizationcode();
+                    $vNumberBilling = $this->vBillingData->generateNumberBilling() + 1;
+                    $vActive = 2;
+                    $vCodeBilling = $this->vBillingData->billingRegister($vCodDosingWrenchKey, $vCodAutorizationcode, $vNumberBilling, $vActive);
+                    
+                    echo $vCodeBilling;
+                }
+        }
+    
+		public function newBilling($vNumberBilling = 0, $vCodClient = 0){
+                $this->vView->vUserNamesComplete = $this->vUsersData->getUserNamesComplete(IdEnSession::getSession(DEFAULT_USER_AUTHENTICATE.'Code'));
+                
+                $vNumberBilling = (int) $vNumberBilling;
+                $vCodClient = (int) $vCodClient;
+                
+                $vValidateStateBilling = $this->vBillingData->getValidateStateBilling($vNumberBilling);
+            
+                if(($vNumberBilling == 0) || empty($vValidateStateBilling) || is_null($vValidateStateBilling)){
+                    $this->redirect('systemBilling');
+                }
+            
+                if($vCodClient != 0){
+                    $vClientName = $this->vBillingData->getClientName($vCodClient);
+                    $vIDClient = $this->vBillingData->getClientNIT($vCodClient);
+                } else {
+                    $vClientName = '';
+                    $vIDClient = '';
+                }            
+                
+                $this->vView->vAutorizationcode = $this->getAutorizationcode();
+                $this->vView->vBillingDetail = $this->vBillingData->getDataBillingDetail($vNumberBilling);
+                $this->vView->vNumberBilling = $this->vBillingData->getNumberBilling($vNumberBilling);
+                
+                $this->vView->vClientName = $vClientName;
+                $this->vView->vIDClient = $vIDClient;
+                $this->vView->vCodClient = $vCodClient;
+            
+                $this->vView->visualizar('newBilling');
+			}
+    
+		public function dataBillingDetails(){
+                if($_SERVER['REQUEST_METHOD'] == 'POST'){
+                    
+                    $vNumBilling = (int) $_POST['vNumBilling'];
+                    $vQuantity = (int) $_POST['vQuantity'];
+                    $vDetail = (string) $_POST['vDetail'];
+                    $vAmount = $_POST['vAmount'];
+                    $vActive = 1;
+
+                    $vCodDosingWrenchKey = (string) $this->getDosingWrenchKey();
+                    $vNumAutorization = (string) $this->getAutorizationcode();
+                    $vClientName = (string) $_POST['vClientName'];
+                    $vIDClient = (string) $_POST['vIDClient'];
+                    $vCodClient = $this->vBillingData->getCodClientThroughNIT($vIDClient);
+                    $vBranchOffice = 1;
+                    $vBillingDate = (string) $_POST['vDateTransactionBilling'];
+                    
+                    $vBillingCode = $this->vBillingData->getCodeBillingFromNumberBilling($vNumBilling);
+                    
+                    if(($vCodClient == 0) || empty($vCodClient) || is_null($vCodClient)){
+                        $vCodClient = $this->vBillingData->clientRegister($vClientName, $vIDClient, 1);
+                        
+                        $this->vBillingData->updateBillingClientCode($vBillingCode, $vNumBilling, $vCodClient);
+                            
+                    } else {
+                        $vCodClient = $this->vBillingData->getCodClientThroughNIT($vIDClient);
+                    }
+                    
+                    $vBillingDetailRegister = $this->vBillingData->billingDetailRegister($vBillingCode, 0, $vQuantity, $vDetail, $vAmount, $vActive);
+                    
+                    echo $vBillingCode.'/'.$vCodClient;
+                }            
 			}
     
 		public function dataBilling(){
                 if($_SERVER['REQUEST_METHOD'] == 'POST'){
                     
-                    $vNumAutorization = (string) $_POST['vNumAutorization'];
+                    $vNumAutorization = (string) $this->getAutorizationcode();
                     $vNumBilling = (string) $_POST['vNumBilling'];
+                    $vClientName = (string) $_POST['vClientName'];
                     $vIDClient = (string) $_POST['vIDClient'];
-                    $date = new DateTime($_POST['vDateTransactionBilling']);
-                    $vDateTransaction = $date->format('Y-m-d');
                     $vDateTransactionBilling = (string) str_replace('/','',$_POST['vDateTransactionBilling']);
+                    $vDateTransaction = str_replace('/','-',$_POST['vDateTransactionBilling']);
                     
                     $vAmountBilling = $this->roundNumber($_POST['vAmountBilling']);
+                    //echo $vAmountBilling = $_POST['vAmountBilling'];
+                    //exit;
                     
-                    /* GENERA LOS 5 NUMEROS DE VERHOEFF */
+                    // GENERA LOS 5 NUMEROS DE VERHOEFF
                     $vFiveDigitVerhoeffNumber = $this->fiveDigitVerhoeffNumber($vNumBilling, $vIDClient, $vDateTransactionBilling, $vAmountBilling);
-                    
-                    /* GENERA LOS 5 NUMEROS DE VERHOEFF INCREMENTADOS EN 1 POR SEPARADO */
+                    // GENERA LOS 5 NUMEROS DE VERHOEFF INCREMENTADOS EN 1 POR SEPARADO
                     $vFiveDigitVerhoeffSeparateDigits = $this->separateDigitsAndAddNumber($vFiveDigitVerhoeffNumber, 1);
-                    //print_r($vFiveDigitVerhoeffSeparateDigits);
-                    //exit;
-                    /* GENERA LA CADENA CONCATENADA EXTRAIDA DE LA LLAVE DE DOSIFICACIÓN MÁS LOS 5 NUMEROS DE VERHOEFF INCREMENTADOS EN 1  */
+                    
+                    // GENERA LA CADENA CONCATENADA EXTRAIDA DE LA LLAVE DE DOSIFICACIÓN MÁS LOS 5 NUMEROS DE VERHOEFF INCREMENTADOS EN 1
                     $vStringDosingWrenchKey = $this->getDosingWrenchKeyString($vNumAutorization, $vNumBilling, $vIDClient, $vDateTransactionBilling, $vAmountBilling, $vFiveDigitVerhoeffSeparateDigits);
-                    //echo $this->compararCadenas($vStringDosingWrenchKey, '1904008691195pPg97825622iF047S%)v}@N4W20080201233aQqqXCEH2600627VS2[aD');
-                    //exit;
-                    /* CADENA ALLEGEDRC4 */
+                    
+                    // CADENA ALLEGEDRC4
                     $vStringAllegedRC4 = $this->algorithmAllegedRC4($vStringDosingWrenchKey, $this->getDosingWrenchKey(), $vFiveDigitVerhoeffNumber);
                     
-                    /* APLICACIÓN DE BASE64 A CADENA ALLEGEDRC4 */
+                    // APLICACIÓN DE BASE64 A CADENA ALLEGEDRC4
                     $vStringBase64 = $this->algorithmBase64($vStringAllegedRC4);
 
-                    
-                    /* GENERACIÓN DEL CÓDIGO DE CONTROL */
+                    // GENERACIÓN DEL CÓDIGO DE CONTROL
                     $vControlCodeString = $this->getControlCode($vStringBase64, $this->getDosingWrenchKey(), $vFiveDigitVerhoeffNumber);
                     
-                    //echo $vAmountBilling.'-'.$vFiveDigitVerhoeffNumber.'-'.$vFiveDigitVerhoeffSeparateDigits.'-'.$vStringDosingWrenchKey.'-'.$vStringAllegedRC4.'-'.$vStringBase64.'-'.$vControlCodeString;
-                    //echo $vControlCodeString;
-                    echo 'invoiceLetter/'.$vNumAutorization.'/'.$vNumBilling.'/'.$vIDClient.'/'.$vDateTransactionBilling.'/'.$vDateTransaction.'/'.$vAmountBilling.'/'.$vControlCodeString;
+                    $vCodBilling = $this->vBillingData->getCodeBillingFromNumberBilling($vNumBilling);
+                    
+                    $vQRCodeImageName = $this->generateQRCode($vCodBilling, $vNumBilling, $vControlCodeString);
+                    
+                    $vActive = 1;
+                    
+                    $this->vBillingData->updateBillingControlCode($vCodBilling, $vNumBilling, $vDateTransaction, $vControlCodeString, $vQRCodeImageName, $vActive);
+                    
+                    echo 'invoiceLetter/'.$vNumBilling;
                 }            
+			}    
+    
+		public function deleteBillingDetail($vCodeBilling, $vCodeBillingDetail, $vCodClient){
+                $vCodeBilling = (int) $vCodeBilling;
+                $vCodeBillingDetail = (int) $vCodeBillingDetail;
+                $vCodClient = (int) $vCodClient;
+                $vActive = 1;
+
+                $vDeleteBillingDetail = $this->vBillingData->deleteBillingDetail($vCodeBillingDetail);
+                $this->redirect('systemBilling/newBilling/'.$vCodeBilling.'/'.$vCodClient);
 			}
     
-		public function invoiceLetter($vNumAutorization,$vNumBilling,$vIDClient,$vDateTransactionBilling,$vDateTransaction,$vAmountBilling,$vControlCodeString){            
+		public function generateQRCode($vCodBilling, $vNumBilling, $vControlCodeString){
 
-				/* CARGA LIBRERIAS */
-				$this->getLibrary('phpqrcode/qrlib');
-				//$this->vNumberVerhoeff = new Verhoeff;
-            
-                $vNumAutorization = (string) $vNumAutorization;
-                $vNumBilling = (string) $vNumBilling;
-                $vIDClient = (string) $vIDClient;
-                $vDateTransactionBilling = (string) $vDateTransactionBilling;
-                $vDateTransaction = (string) $vDateTransaction;
-                $vAmountBilling = (string) $vAmountBilling;
-                $vAmountBillingText = $this->num2letras($vAmountBilling);
+                $vCodBilling = (int) $vCodBilling;
+                $vNumBilling = (int) $vNumBilling;
                 $vControlCodeString = (string) $vControlCodeString;
+                $vQRCodeName = $this->vBillingData->getQRCodeBillings($vCodBilling, $vBillingNumber);
             
-                $this->vView->vNumAutorization = $vNumAutorization;
-                $this->vView->vNumBilling = $vNumBilling;
-                $this->vView->vIDClient = $vIDClient;
-                $this->vView->vDateTransactionBilling = $vDateTransactionBilling;
-                $this->vView->vDateTransaction = $vDateTransaction;
-                $this->vView->vAmountBilling = $vAmountBilling;
-                $this->vView->vAmountBillingText = $vAmountBillingText;
-                $this->vView->vControlCodeString = $vControlCodeString;
-            
-            
-                /* GENERADOR QRCode */
-                //$tempDir =  ROOT_APPLICATION.'views\backend\systemBilling\imagesqrcode\\';
-                $tempDir =  ROOT_APPLICATION.'views'.DIR_SEPARATOR.'backend'.DIR_SEPARATOR.'systemBilling'.DIR_SEPARATOR.'imagesqrcode'.DIR_SEPARATOR;
-                $codeContents = $vNumAutorization.'/'.$vNumBilling.'/'.$vIDClient.'/'.$vDateTransactionBilling.'/'.$vAmountBilling.'/'.$vControlCodeString;
-                // we need to generate filename somehow, 
-                // with md5 or with database ID used to obtains $codeContents...
-                $fileName = $vNumBilling.'_'.md5($codeContents).'.png';
-                $pngAbsoluteFilePath = $tempDir.$fileName;
-                $urlRelativeFilePath = $fileName;
-                // generating
-                if (!file_exists($pngAbsoluteFilePath)) {
-                    QRcode::png($codeContents, $pngAbsoluteFilePath);
-                    /*echo 'File generated!';
-                    echo '<hr />';*/
-                } else {
-                    /*echo 'File already generated! We can use this cached file to speed up site on common codes!';
-                    echo '<hr />';*/
-                }
+                $vQRCodeImageName = '';
 
-                $this->vView->vQRCodeImage = $urlRelativeFilePath;
+                if(($vQRCodeName == 0) || empty($vQRCodeName) || is_null($vQRCodeName)){
+                    // CARGA LIBRERIAS
+                    $this->getLibrary('phpqrcode/qrlib');
+
+                    // GENERADOR QRCode
+                    $tempDir =  ROOT_APPLICATION.'views'.DIR_SEPARATOR.'backend'.DIR_SEPARATOR.'systemBilling'.DIR_SEPARATOR.'imagesqrcode'.DIR_SEPARATOR;
+                    $codeContents = $vCodBilling.'/'.$vNumBilling.'/'.$vControlCodeString;
+                    $fileName = $vNumBilling.'_'.md5($codeContents).'.png';
+                    $pngAbsoluteFilePath = $tempDir.$fileName;
+                    $urlRelativeFilePath = $fileName;
+                    $vQRCodeImageName = $fileName;
+                    
+                    if (!file_exists($pngAbsoluteFilePath)) {
+                        QRcode::png($codeContents, $pngAbsoluteFilePath);
+                        
+                    }
+                    
+                    return $vQRCodeImageName;
                 
-                $this->vView->visualizar('invoiceletter');
+                } else {
+                    
+                    $vQRCodeImageName = $vQRCodeName;
+                    
+                    return $vQRCodeImageName;
+                }
+            }    
+    
+		public function invoiceLetter($vNumBilling){
+
+                $vNumBilling = (int) $vNumBilling;
+                $vCodBilling = $this->vBillingData->getCodeBillingFromNumberBilling($vNumBilling);
+            
+                $this->vView->vDataBilling = $this->vBillingData->getDataBilling($vNumBilling);
+                $this->vView->vDataBillingDetail = $this->vBillingData->getDataBillingDetail($vCodBilling);
+                
+                $this->vView->visualizar('invoiceLetter');
 			}    
     
 		public function algorithmVerhoeff($vNumber, $vNumberLoop){
