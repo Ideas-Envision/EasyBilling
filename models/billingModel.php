@@ -7,6 +7,55 @@ class billingModel extends IdEnModel
 			}
 
         /* BEGIN SELECT STATEMENT QUERY  */
+		public function getNITBilling()
+            {
+				$vResultNITBilling = $this->vDataBase->query("SELECT
+                                                                        tb_easybilling_nit.n_nit
+                                                                    FROM tb_easybilling_nit
+                                                                        WHERE tb_easybilling_nit.n_active = 1;");
+				return $vResultNITBilling->fetchColumn();
+				$vResultNITBilling->close();
+			}
+    
+		public function getNITActivities()
+            {
+				$vResultNITActivities = $this->vDataBase->query("SELECT
+                                                                    tb_easybilling_nit.n_nit,
+                                                                    tb_easybilling_activities.n_codactivity,
+                                                                    tb_easybilling_activities.c_nameactivity
+                                                                FROM tb_easybilling_nit, tb_easybilling_activities
+                                                                    WHERE tb_easybilling_nit.n_codnit = tb_easybilling_activities.n_codnit
+                                                                        AND tb_easybilling_nit.n_active = 1
+                                                                        AND tb_easybilling_activities.n_active = 1;");
+				return $vResultNITActivities->fetchAll();
+				$vResultNITActivities->close();
+			}
+    
+		public function getNameActivity($vCodActivity)
+            {
+                $vCodActivity = (int) $vCodActivity;
+            
+				$vResultNameActivity = $this->vDataBase->query("SELECT
+                                                                    tb_easybilling_activities.c_nameactivity
+                                                                FROM tb_easybilling_activities
+                                                                    WHERE tb_easybilling_activities.n_codactivity = $vCodActivity;");
+				return $vResultNameActivity->fetchColumn();
+				$vResultNameActivity->close();
+			}    
+    
+		public function getActivityServices($vCodActivity)
+            {
+                $vCodActivity = (int) $vCodActivity;
+				$vResultActivityServices = $this->vDataBase->query("SELECT
+                                                                        tb_easybilling_services.n_codservice,
+                                                                        tb_easybilling_services.c_nameservice
+                                                                    FROM tb_easybilling_services
+                                                                        WHERE tb_easybilling_services.n_codactivity = $vCodActivity
+                                                                            AND tb_easybilling_services.n_active = 1;");
+				return $vResultActivityServices->fetchAll();
+				$vResultActivityServices->close();
+			}    
+    
 		public function getCodeDosingWrenchKey()
             {
 				$vResultCodeDosingWrenchKey = $this->vDataBase->query("SELECT
@@ -15,7 +64,7 @@ class billingModel extends IdEnModel
                                                                         WHERE tb_easybilling_dosingwrenchkey.n_active = 1;");
 				return $vResultCodeDosingWrenchKey->fetchColumn();
 				$vResultCodeDosingWrenchKey->close();
-			}
+			}    
     
 		public function getDataDosingWrenchKey()
             {
@@ -136,6 +185,18 @@ class billingModel extends IdEnModel
 				$vResultCodeBillingFromNumberBilling->close();
 			}
     
+		public function getCodActivityFromBilling($vNumberBilling)
+            {
+                $vNumberBilling = (int) $vNumberBilling;
+            
+				$vResultCodActivityBilling = $this->vDataBase->query("SELECT
+                                                                            tb_easybilling_billings.n_codactivity
+                                                                        FROM tb_easybilling_billings
+                                                                            WHERE tb_easybilling_billings.n_codbilling = $vNumberBilling;");
+				return $vResultCodActivityBilling->fetchColumn();
+				$vResultCodActivityBilling->close();
+			}    
+    
 		public function getNumberBilling($vNumberBilling)
             {
                 $vNumberBilling = (int) $vNumberBilling;
@@ -146,7 +207,7 @@ class billingModel extends IdEnModel
                                                                             WHERE tb_easybilling_billings.n_codbilling = $vNumberBilling;");
 				return $vResultNumberBilling->fetchColumn();
 				$vResultNumberBilling->close();
-			}    
+			}     
     
 		public function getDataBilling($vNumberBilling)
             {
@@ -273,6 +334,11 @@ class billingModel extends IdEnModel
                                                                         tb_easybilling_billingdetail.n_coduser,
                                                                         tb_easybilling_billingdetail.n_codbilling,
                                                                         tb_easybilling_billingdetail.n_service,
+                                                                        (SELECT
+                                                                            tb_easybilling_services.c_nameservice
+                                                                          FROM tb_easybilling_services
+                                                                            WHERE tb_easybilling_services.n_codservice = tb_easybilling_billingdetail.n_service
+                                                                            AND tb_easybilling_services.n_active = 1) AS c_nameservice,                                                                        
                                                                         tb_easybilling_billingdetail.n_quantity,
                                                                         tb_easybilling_billingdetail.c_billingdetail,
                                                                         tb_easybilling_billingdetail.n_amount,
@@ -375,11 +441,12 @@ class billingModel extends IdEnModel
                 $vResultBillingRegister->close();
 			}    
     
-		public function billingDetailRegister($vCodBilling, $vCodService, $vQuantity, $vBillingDetail, $vAmount, $vActive){
+		public function billingDetailRegister($vCodBilling, $vCodService, $vQuantity, $vCodService, $vBillingDetail, $vAmount, $vActive){
             
                 $vCodBilling = (int) $vCodBilling;
                 $vCodService = (int) $vCodService;
                 $vQuantity = (int) $vQuantity;
+                $vCodService = (int) $vCodService;
                 $vBillingDetail = (string) $vBillingDetail;
                 $vAmount = floatval($vAmount);
                 $vActive = (int) $vActive;
@@ -406,6 +473,34 @@ class billingModel extends IdEnModel
         /* END INSERT STATEMENT QUERY  */
     
         /* BEGIN UPDATE STATEMENT QUERY  */
+		public function updateBillingActivity($vCodBilling, $vNumBilling, $vCodActivity)
+            {            
+                $vCodBilling = (int) $vCodBilling;
+                $vNumBilling = (int) $vNumBilling;
+                $vCodActivity = (int) $vCodActivity;
+
+                $vUserMod = (string) IdEnSession::getSession(DEFAULT_USER_AUTHENTICATE.'UserName');
+            
+                $vResultUpdateBillingActivity = $this->vDataBase->prepare("UPDATE
+                                                                            tb_easybilling_billings
+                                                                        SET tb_easybilling_billings.n_codactivity = :n_codactivity,
+                                                                            tb_easybilling_billings.c_usermod = :c_usermod,
+                                                                            tb_easybilling_billings.d_datemod = NOW()
+                                                                        WHERE tb_easybilling_billings.n_codbilling = :n_codbilling
+                                                                            AND tb_easybilling_billings.n_billingnumber = :n_billingnumber;")
+                                ->execute(
+                                            array(
+                                                    ':n_codactivity'=>$vCodActivity,
+                                                    ':c_usermod'=>$vUserMod,
+                                                    ':n_codbilling'=>$vCodBilling,
+                                                    ':n_billingnumber'=>$vNumBilling
+                                                 )
+                                         );
+            
+                return $vResultUpdateBillingActivity;
+                $vResultUpdateBillingActivity->close();
+			}
+    
 		public function updateBillingClientCode($vCodBilling, $vNumBilling, $vCodClient)
             {            
                 $vCodBilling = (int) $vCodBilling;

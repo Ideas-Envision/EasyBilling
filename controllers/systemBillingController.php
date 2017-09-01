@@ -67,8 +67,18 @@ class systemBillingController extends IdEnController
                     $vIDClient = '';
                 }            
                 
+                $this->vView->vNITBilling = $this->vBillingData->getNITBilling();
+            
+                $this->vView->vActivityBilling = $this->vBillingData->getCodActivityFromBilling($vNumberBilling);
+                $this->vView->vNameActivity = $this->vBillingData->getNameActivity($this->vBillingData->getCodActivityFromBilling($vNumberBilling));
+                
+                $this->vView->vDataActivityServices = $this->vBillingData->getActivityServices($this->vBillingData->getCodActivityFromBilling($vNumberBilling));
+                
+                $this->vView->vNITActivities = $this->vBillingData->getNITActivities();
                 $this->vView->vAutorizationcode = $this->getAutorizationcode();
+                
                 $this->vView->vBillingDetail = $this->vBillingData->getDataBillingDetail($vNumberBilling);
+                
                 $this->vView->vNumberBilling = $this->vBillingData->getNumberBilling($vNumberBilling);
                 
                 $this->vView->vClientName = $vClientName;
@@ -81,6 +91,9 @@ class systemBillingController extends IdEnController
 		public function dataBillingDetails(){
                 if($_SERVER['REQUEST_METHOD'] == 'POST'){
                     
+                    
+                    $vCodActivity = (int) $_POST['vCodActivity'];
+                    $vCodService = (int) $_POST['vCodService'];
                     $vNumBilling = (int) $_POST['vNumBilling'];
                     $vQuantity = (int) $_POST['vQuantity'];
                     $vDetail = (string) $_POST['vDetail'];
@@ -106,16 +119,34 @@ class systemBillingController extends IdEnController
                         $vCodClient = $this->vBillingData->getCodClientThroughNIT($vIDClient);
                     }
                     
-                    $vBillingDetailRegister = $this->vBillingData->billingDetailRegister($vBillingCode, 0, $vQuantity, $vDetail, $vAmount, $vActive);
+                    
+                    $vUpdateBillingActivity = $this->vBillingData->updateBillingActivity($vBillingCode, $vNumBilling, $vCodActivity);
+                    
+                    $vBillingDetailRegister = $this->vBillingData->billingDetailRegister($vBillingCode, 0, $vQuantity, $vCodService, $vDetail, $vAmount, $vActive);
                     
                     echo $vBillingCode.'/'.$vCodClient;
                 }            
 			}
     
+		public function getActivityServices(){
+                if($_SERVER['REQUEST_METHOD'] == 'POST'){
+                    $vCodActivity = (int) $_POST['vCodActivity'];
+                    
+                    $this->vDataActivityServices = $this->vBillingData->getActivityServices($vCodActivity);
+                    
+                    for($i=0;$i<count($this->vDataActivityServices);$i++):
+                        $vDataServices .= '<option value="'.$this->vDataActivityServices[$i]['n_codservice'].'">'.$this->vDataActivityServices[$i]['c_nameservice'].'</option>';
+                    endfor;
+                    
+                    echo $vDataServices;
+                }
+			}    
+    
 		public function dataBilling(){
                 if($_SERVER['REQUEST_METHOD'] == 'POST'){
                     
                     $vNumAutorization = (string) $this->getAutorizationcode();
+                    
                     $vNumBilling = (string) $_POST['vNumBilling'];
                     $vClientName = (string) $_POST['vClientName'];
                     $vIDClient = (string) $_POST['vIDClient'];
@@ -166,11 +197,43 @@ class systemBillingController extends IdEnController
 			}
     
 		public function generateQRCode($vCodBilling, $vNumBilling, $vControlCodeString){
-
+                
+            
+                //http://localhost/easybilling/systemBilling/generateQRCode/1/897257/F427D81F
+            
                 $vCodBilling = (int) $vCodBilling;
                 $vNumBilling = (int) $vNumBilling;
                 $vControlCodeString = (string) $vControlCodeString;
                 $vQRCodeName = $this->vBillingData->getQRCodeBillings($vCodBilling, $vBillingNumber);
+            
+                $this->vDataBilling = $this->vBillingData->getDataBilling($vNumBilling);
+                $this->vDataBillingDetail = $this->vBillingData->getDataBillingDetail($vCodBilling);
+            
+               if(isset($this->vDataBilling) && count($this->vDataBilling)):                           
+                    for($i=0;$i<count($this->vDataBilling);$i++):
+                        $vCodBilling = $this->vDataBilling[$i]['n_codbilling'];
+                        $vCodUser = $this->vDataBilling[$i]['n_coduser'];
+                        $vAutorizationcode = $this->vDataBilling[$i]['c_autorizationcode'];
+                        $vNameNit = $this->vDataBilling[$i]['c_namenit'];
+                        $vNit = $this->vDataBilling[$i]['c_nit'];
+                        $vCodClient = $this->vDataBilling[$i]['n_codclient'];
+                        $vBranchOffice = $this->vDataBilling[$i]['n_branchoffice'];
+                        $vBillingNumber = $this->vDataBilling[$i]['n_billingnumber'];
+                        $vBillingDate = $this->vDataBilling[$i]['d_billingdate'];
+                        $vControlCode = $this->vDataBilling[$i]['c_controlcode'];
+                        $vQRCodeName = $this->vDataBilling[$i]['c_qrcodename'];
+                    endfor;
+                endif;
+            
+                $vTotalItemAmount = 0;
+                $vTotalBillingAmount = 0;
+                if(isset($this->vDataBillingDetail) && count($this->vDataBillingDetail)):
+                    $vCount = 1;
+                    for($i=0;$i<count($this->vDataBillingDetail);$i++):
+                        $vTotalItemAmount = $this->vDataBillingDetail[$i]['n_quantity']*$this->vDataBillingDetail[$i]['n_amount'];
+                        $vTotalBillingAmount = $vTotalBillingAmount + $vTotalItemAmount;
+                    endfor;
+                endif;            
             
                 $vQRCodeImageName = '';
 
@@ -180,7 +243,8 @@ class systemBillingController extends IdEnController
 
                     // GENERADOR QRCode
                     $tempDir =  ROOT_APPLICATION.'views'.DIR_SEPARATOR.'backend'.DIR_SEPARATOR.'systemBilling'.DIR_SEPARATOR.'imagesqrcode'.DIR_SEPARATOR;
-                    $codeContents = $vCodBilling.'/'.$vNumBilling.'/'.$vControlCodeString;
+                    //$codeContents = $vCodBilling.'/'.$vNumBilling.'/'.$vControlCodeString;
+                    $codeContents = '4826454016'.'|'.$vBillingNumber.'|'.$vAutorizationcode.'|'.date('d/m/Y',$vBillingDate).'|'.number_format($vTotalBillingAmount, 2, '.', '').'|'.number_format($vTotalBillingAmount, 2, '.', '').'|'.$vControlCodeString.'|'.$vNit.'|0|0|0|0';
                     $fileName = $vNumBilling.'_'.md5($codeContents).'.png';
                     $pngAbsoluteFilePath = $tempDir.$fileName;
                     $urlRelativeFilePath = $fileName;

@@ -50,7 +50,7 @@
                                                             <label>NIT</label>
                                                             <div class="input-icon right margin-top-10">
                                                                 <i class="fa fa-check"></i>
-                                                                <input type="text" class="form-control" placeholder="4826454016" disabled>
+                                                                <input type="text" class="form-control" value="<?Php echo $this->vNITBilling; ?>" disabled>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-5">
@@ -82,7 +82,7 @@
                                                             <label>Fecha de Emisión</label>
                                                             <div class="input-icon right margin-top-10">
                                                                 <i class="fa fa-check"></i>
-                                                                <input type="text" class="form-control" value="<?Php echo '2007/05/31'; ?>" name="vDateTransactionBilling" id="vDateTransactionBilling" readonly>
+                                                                <input type="text" class="form-control" value="<?Php echo '2008/12/19'; ?>" name="vDateTransactionBilling" id="vDateTransactionBilling" readonly>
                                                             </div>
                                                         </div>
                                                     </div>                                                    
@@ -101,13 +101,22 @@
                                                     <div class="row">
                                                         <div class="col-md-5">
                                                             <label>Actividad Económica</label>
-                                                            <select class="form-control margin-top-10">
-                                                                <option>Seleccionar</option>
-                                                                <option>Alquiler de Bienes raices</option>
-                                                                <option>Servicios Informáticos</option>
-                                                                <option>Publicidad</option>
-                                                                <option>Educación</option>
-                                                            </select>
+                                                            <?Php
+                                                            if(isset($this->vActivityBilling)):
+                                                                echo '<select class="form-control margin-top-10" id="vCodActivity" name="vCodActivity" readonly>';
+                                                                    echo '<option value="'.$this->vActivityBilling.'">'.$this->vNameActivity.'</option>';
+                                                                echo '</select>';
+                                                            else:
+                                                                echo '<option value="0">Seleccionar</option>';
+                                                                if(isset($this->vNITActivities) && count($this->vNITActivities)):
+                                                                    $vCount = 1;
+                                                                    for($i=0;$i<count($this->vNITActivities);$i++):
+
+                                                                        echo '<option value="'.$this->vNITActivities[$i]['n_codactivity'].'">'.$this->vNITActivities[$i]['c_nameactivity'].'</option>';
+                                                                    endfor;
+                                                                endif;                                                            
+                                                            endif;                                                                
+                                                            ?>
                                                         </div>
                                                         <div class="col-md-4">
                                                             <label>Documento</label>
@@ -161,7 +170,19 @@
                                                             <tbody>
                                                                 <tr>
                                                                     <td class="col-md-1"><input type="text" class="form-control" id="vQuantity" value=""></td>
-                                                                    <td class="col-md-7"><input type="text" class="form-control" id="vDetail" value=""></td>
+                                                                    <td class="col-md-7">
+                                                                        <select class="form-control" name="vCodService" id="vCodService" style="margin-bottom: 8px;">
+                                                                            <option value="0">Seleccionar</option>
+                                                                            <?Php
+                                                                            if(isset($this->vDataActivityServices) && count($this->vDataActivityServices)):
+                                                                                for($i=0;$i<count($this->vDataActivityServices);$i++):
+                                                                                    echo '<option value="'.$this->vDataActivityServices[$i]['n_codservice'].'">'.$this->vDataActivityServices[$i]['c_nameservice'].'</option>';
+                                                                                endfor;
+                                                                            endif;                                                                
+                                                                            ?>
+                                                                        </select>                                                             
+                                                                        <input type="text" class="form-control" id="vDetail" value="">
+                                                                    </td>
                                                                     <td class="col-md-2" colspan="2"><input type="text" class="form-control" id="vAmount" value=""></td>
                                                                     <td class="col-md-1" colspan="2"><a id="submitFormDetail" class="btn red">Guardar</a></td>
                                                                 </tr>
@@ -174,7 +195,10 @@
                                                                             $vFinalAmount = $this->vBillingDetail[$i]['n_quantity'] * $this->vBillingDetail[$i]['n_amount'];
                                                                             echo '<tr>';
                                                                                 echo '<td>'.$this->vBillingDetail[$i]['n_quantity'].'</td>';
-                                                                                echo '<td>'.$this->vBillingDetail[$i]['c_billingdetail'].'</td>';
+                                                                                echo '<td>';
+                                                                                    echo '<h4><strong>'.$this->vBillingDetail[$i]['c_nameservice'].'</strong></h4>';
+                                                                                    echo '<p>'.$this->vBillingDetail[$i]['c_billingdetail'].'</p>';
+                                                                                echo '</td>';
                                                                                 echo '<td>'.$this->vBillingDetail[$i]['n_amount'].'</td>';
                                                                                 echo '<td>'.$vFinalAmount.'</td>';
                                                                                 echo '<td><a class="edit" href="'.BASE_VIEW_URL.'systemBilling/updateBillingDetail/'.$this->vBillingDetail[$i]['n_codbillingdetail'].'">Modificar</a></td>';
@@ -208,8 +232,8 @@
 
                                             </div>
                                             <div class="form-actions right">
-                                                <button type="button" class="btn default">Cancel</button>
-                                                <button type="submit" class="btn green">Submit</button>
+                                                <button type="button" class="btn default">Cancelar</button>
+                                                <button type="submit" class="btn green">Generar</button>
                                             </div>
                                         </form>
                                     </div>

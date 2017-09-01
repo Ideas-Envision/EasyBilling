@@ -41,13 +41,18 @@
                                     $vControlCode = $this->vDataBilling[$i]['c_controlcode'];
                                     $vQRCodeName = $this->vDataBilling[$i]['c_qrcodename'];
                                 endfor;
+
+                                $date = date_create($vBillingDate);
+                                $vBillingDate = date_format($date, 'Y-m-d H:i:s');
+                                $vLimitBillingDate = date_format($date, 'd/m/Y');
+                        
                             endif;
                         ?>
                         
                         <!-- END PAGE HEADER-->
                         <div class="row">
                             <div class="col-md-8">
-                                <a href="<?Php echo BASE_VIEW_URL.'systemBilling/invoiceLetter/'.$vBillingNumber;?>" class="btn green" ><i class="fa fa-print"></i> Generar PDF </a>
+                                <a href="<?Php echo BASE_VIEW_URL.'pdf/printPDFBilling/'.$vBillingNumber;?>" class="btn green" target="_blank"><i class="fa fa-print"></i> Generar PDF </a>
                             </div>
                         </div>
                         <br/>
@@ -93,7 +98,7 @@
                                         
                                         <div class="col-xs-12 col-md-6">
                                             <h2 class="invoice-title uppercase">Lugar y fecha de emisión</h2>
-                                            <p class="invoice-desc">La Paz, <?Php echo strftime("%A, %d de %B de %Y", $this->vDateTransaction); ?></p>
+                                            <p class="invoice-desc">La Paz, <?Php echo $this->spanishLiteralDate($vBillingDate); ?></p>
                                         </div>
                                         <div class="col-xs-12 col-md-4">
                                             <h2 class="invoice-title uppercase">Nombre Cliente</h2>
@@ -128,7 +133,7 @@
                                                                 echo '<td class="text-center sbold">'.$vCount.'</td>';
                                                                 echo '<td class="text-center sbold">'.$this->vDataBillingDetail[$i]['n_quantity'].'</td>';
                                                                 echo '<td>';
-                                                                    echo '<h3>Título del Servicio</h3>';
+                                                                    echo '<h4><strong>'.$this->vDataBillingDetail[$i]['c_nameservice'].'</strong></h4>';                                                    
                                                                     echo '<p>'.$this->vDataBillingDetail[$i]['c_billingdetail'].'</p>';
                                                                 echo '</td>';
                                                                 echo '<td class="text-center sbold">'.number_format($this->vDataBillingDetail[$i]['n_amount'], 2, '.', '').'</td>';
@@ -158,7 +163,7 @@
                                     <div class="row invoice-subtotal">                                        
                                         <div class="col-md-6 invoice-text-2 well pull-left">
                                             <strong>Código de control</strong> <?Php echo $this->formatControlCodeInvoice($vControlCode); ?><br/>
-                                            <strong>Fecha límite de emisión</strong> <?Php echo $vBillingDate; ?><br/>
+                                            <strong>Fecha límite de emisión</strong> <?Php echo $vLimitBillingDate; ?><br/>
                                         </div>
                                         <div class="col-md-2 well pull-right">
                                             <img src="<?Php echo $vParamsViewQRCode['root_qrcode_img'].$vQRCodeName; ?>" class="img-responsive" alt="" />

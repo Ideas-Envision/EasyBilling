@@ -61,8 +61,8 @@
                                                             echo '<tr>';
                                                                 echo '<td>'.$vCount.'</td>';
                                                                 echo '<td>'.$this->vDataBilling[$i]['n_billingnumber'].'</td>';
-                                                                echo '<td>'.$this->vDataBilling[$i]['c_namenit'].'</td>';
                                                                 echo '<td>'.$this->vDataBilling[$i]['c_nit'].'</td>';
+                                                                echo '<td>'.$this->vDataBilling[$i]['c_namenit'].'</td>';
                                                                 echo '<td>'.$this->vDataBilling[$i]['d_billingdate'].'</td>';
                                                                 echo '<td>'.$this->vDataBilling[$i]['n_totalamount'].'</td>';
                                                                 echo '<td><a href="'.BASE_VIEW_URL.'systemBilling/invoiceLetter/'.$this->vDataBilling[$i]['n_billingnumber'].'" class="btn green" ><i class="fa fa-print"></i> Visualizar </a></td>';
