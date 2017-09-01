@@ -79,6 +79,7 @@ CREATE TABLE `tb_easybilling_dosingwrenchkey` (
 CREATE TABLE `tb_easybilling_billings` (
   `n_codbilling` int(11) NOT NULL auto_increment,
   `n_coduser` int(11) default NULL,
+  `n_codactivity` int(11) NOT NULL,
   `n_coddosingwrenchkey` int(11) NOT NULL,
   `n_codautorizationcode` int(11) NOT NULL,
   `n_codclient` int(11) NOT NULL,
@@ -127,3 +128,42 @@ CREATE TABLE `tb_easybilling_client` (
   PRIMARY KEY  (`n_codclient`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
+CREATE TABLE `tb_easybilling_nit` (
+  `n_codnit` int(11) NOT NULL auto_increment,
+  `n_nit` int(11) default NULL,
+  `c_namenit` text collate utf8_spanish_ci,
+  `c_descnit` text collate utf8_spanish_ci,
+  `n_active` int(11) default NULL,
+  `c_usercreate` varchar(50) collate utf8_spanish_ci NOT NULL,
+  `d_datecreate` datetime default NULL,
+  `c_usermod` varchar(50) collate utf8_spanish_ci NOT NULL,
+  `d_datemod` datetime default NULL,
+  PRIMARY KEY  (`n_codnit`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+CREATE TABLE `tb_easybilling_activities` (
+  `n_codactivity` int(11) NOT NULL auto_increment,
+  `n_codnit` int(11) NOT NULL,
+  `c_nameactivity` text collate utf8_spanish_ci,
+  `c_descactivity` text collate utf8_spanish_ci,
+  `n_active` int(11) default NULL,
+  `c_usercreate` varchar(50) collate utf8_spanish_ci NOT NULL,
+  `d_datecreate` datetime default NULL,
+  `c_usermod` varchar(50) collate utf8_spanish_ci NOT NULL,
+  `d_datemod` datetime default NULL,
+  PRIMARY KEY  (`n_codactivity`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+CREATE TABLE `tb_easybilling_services` (
+  `n_codservice` int(11) NOT NULL auto_increment,
+  `n_codactivity` int(11) NOT NULL,
+  `c_nameservice` text collate utf8_spanish_ci,
+  `c_descservice` text collate utf8_spanish_ci,
+  `n_amountservice` double(11,2) NOT NULL,
+  `n_active` int(11) default NULL,
+  `c_usercreate` varchar(50) collate utf8_spanish_ci NOT NULL,
+  `d_datecreate` datetime default NULL,
+  `c_usermod` varchar(50) collate utf8_spanish_ci NOT NULL,
+  `d_datemod` datetime default NULL,
+  PRIMARY KEY  (`n_codservice`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
