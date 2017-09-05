@@ -70,7 +70,7 @@ CREATE TABLE `tb_easybilling_nit` (
 CREATE TABLE `tb_easybilling_activities` (
   `n_codactivity` int(11) NOT NULL auto_increment,
   `n_codnit` int(11) NOT NULL,
-  `c_group` text  text collate utf8_spanish_ci,
+  `c_group` text collate utf8_spanish_ci,
   `c_nameactivity` text collate utf8_spanish_ci,
   `c_descactivity` text collate utf8_spanish_ci,
   `n_active` int(11) default NULL,
