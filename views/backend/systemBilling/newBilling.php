@@ -82,7 +82,7 @@
                                                             <label>Fecha de Emisión</label>
                                                             <div class="input-icon right margin-top-10">
                                                                 <i class="fa fa-check"></i>
-                                                                <input type="text" class="form-control" value="<?Php echo '2008/12/19'; ?>" name="vDateTransactionBilling" id="vDateTransactionBilling" readonly>
+                                                                <input type="text" class="form-control" value="<?Php echo '2016/03/16'; ?>" name="vDateTransactionBilling" id="vDateTransactionBilling" readonly>
                                                             </div>
                                                         </div>
                                                     </div>                                                    
@@ -102,11 +102,13 @@
                                                         <div class="col-md-5">
                                                             <label>Actividad Económica</label>
                                                             <?Php
-                                                            if(isset($this->vActivityBilling)):
+                                                            //echo $this->vActivityBilling;
+                                                            if($this->vActivityBilling != 0):
                                                                 echo '<select class="form-control margin-top-10" id="vCodActivity" name="vCodActivity" readonly>';
                                                                     echo '<option value="'.$this->vActivityBilling.'">'.$this->vNameActivity.'</option>';
                                                                 echo '</select>';
                                                             else:
+                                                            echo '<select class="form-control margin-top-10" id="vCodActivity" name="vCodActivity">';
                                                                 echo '<option value="0">Seleccionar</option>';
                                                                 if(isset($this->vNITActivities) && count($this->vNITActivities)):
                                                                     $vCount = 1;
@@ -114,7 +116,8 @@
 
                                                                         echo '<option value="'.$this->vNITActivities[$i]['n_codactivity'].'">'.$this->vNITActivities[$i]['c_nameactivity'].'</option>';
                                                                     endfor;
-                                                                endif;                                                            
+                                                                endif;
+                                                            echo '</select>';
                                                             endif;                                                                
                                                             ?>
                                                         </div>

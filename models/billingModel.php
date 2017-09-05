@@ -390,6 +390,50 @@ class billingModel extends IdEnModel
                                                                         AND tb_easybilling_billings.n_billingnumber = $vBillingNumber;");
 				return $vResultQRCodeBillings->fetchColumn();
 				$vResultQRCodeBillings->close();
+			}
+    
+		public function getDataBillingCiclicProcess()
+            {
+            
+				$vResultDataBillingCiclicProcess = $this->vDataBase->query("SELECT
+                                                                               (SELECT
+                                                                                    tb_easybilling_activities.c_group
+                                                                                  FROM tb_easybilling_activities
+                                                                                    WHERE tb_easybilling_activities.n_codactivity = tb_easybilling_billings.n_codactivity
+                                                                                ) AS GRUPO,
+                                                                                (SELECT
+                                                                                    tb_easybilling_autorizationcode.c_autorizationcode
+                                                                                  FROM tb_easybilling_autorizationcode
+                                                                                    WHERE tb_easybilling_autorizationcode.n_codautorizationcode = tb_easybilling_billings.n_codautorizationcode) AS c_autorizationcode,
+                                                                                tb_easybilling_billings.n_billingnumber,
+                                                                                tb_easybilling_billings.c_controlcode,
+                                                                                (SELECT
+                                                                                    tb_easybilling_client.c_nit
+                                                                                  FROM tb_easybilling_client
+                                                                                    WHERE tb_easybilling_client.n_codclient = tb_easybilling_billings.n_codclient) AS c_nit,
+                                                                                (SELECT
+                                                                                    tb_easybilling_client.c_namenit
+                                                                                  FROM tb_easybilling_client
+                                                                                    WHERE tb_easybilling_client.n_codclient = tb_easybilling_billings.n_codclient) AS c_namenit,
+                                                                                tb_easybilling_billings.d_billingdate,
+                                                                                (SELECT
+                                                                                    SUM(tb_easybilling_billingdetail.n_quantity*tb_easybilling_billingdetail.n_amount)
+                                                                                  FROM tb_easybilling_billingdetail
+                                                                                    WHERE tb_easybilling_billingdetail.n_codbilling = tb_easybilling_billings.n_codbilling) AS n_totalamount,
+                                                                                0 AS IMPORTE_ICE_IEH_TASAS,
+                                                                                0 AS IMPORTE_EXTERNO,
+                                                                                0 AS VENTAS_GRAVADAS,
+                                                                                0 AS DESCUENTOS_BONIFICACIONES,
+                                                                                0 AS PLACA,
+                                                                                0 AS PAIS_ORIGEN_PLACA,
+                                                                                0 AS TIPO_ENVASE,
+                                                                                0 AS TIPO_PRODUCTO,
+                                                                                0 AS AUTORIZACION_VENTA,
+                                                                                0 AS TIPO_CAMBIO,
+                                                                                0 AS TIPO_MONEDA
+                                                                            FROM tb_easybilling_billings;");
+				return $vResultDataBillingCiclicProcess->fetchAll();
+				$vResultDataBillingCiclicProcess->close();
 			}    
     
         /* END SELECT STATEMENT QUERY  */

@@ -31,7 +31,10 @@
                         </div>
                         
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-12">
+                                <a href="#" class="btn blue" id="btnGenerateFile"><i class="fa fa-gear"></i> Generar Archivo </a>
+                            </div>                            
+                            <div class="col-md-12">
                                 <div class="portlet light bordered">
                                     <div class="portlet-title">
                                         <div class="caption font-dark">
@@ -44,28 +47,54 @@
                                         <table class="table table-striped table-bordered table-hover dt-responsive" width="100%" id="sample_1">
                                             <thead>
                                                 <tr>
-                                                    <th class="all">Nº</th>
-                                                    <th class="none">Nº Factura</th>
-                                                    <th class="none">Nit</th>
-                                                    <th class="min-tablet">Nombre</th>
-                                                    <th class="none">Fecha Facturación</th>
-                                                    <th class="all">Monto Bs</th>
-                                                    <th class="all">Acciones</th>
+                                                    <th class="all">Grupo</th>
+                                                    <th class="all">Numero de Autorización</th>
+                                                    <th class="all">Numero de Factura</th>
+                                                    <th class="all">Código de Control</th>
+                                                    <th class="all">CI/NIT/Cliente</th>
+                                                    <th class="all">Nombre Cliente</th>
+                                                    <th class="all">Fecha Factura</th>
+                                                    <th class="all">Importe Total</th>
+                                                    <th class="all">Importe ICE/IEH TASAS</th>
+                                                    <th class="all">Importe Exento</th>
+                                                    <th class="all">Ventas Gravadas Tasa cero</th>
+                                                    <th class="all">Descuentos Bonificaciones</th>
+                                                    <th class="all">Placa</th>
+                                                    <th class="all">País de origen de la Placa</th>
+                                                    <th class="all">Tipo de envase</th>
+                                                    <th class="all">Tipo de Producto</th>
+                                                    <th class="all">Autorización de venta</th>
+                                                    <th class="all">Tipo de Cambio</th>
+                                                    <th class="all">Tipo de Moneda</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <?Php                                               
-                                                   if(isset($this->vDataBilling) && count($this->vDataBilling)):
+                                                   if(isset($this->DataBillingCiclicProcess) && count($this->DataBillingCiclicProcess)):
                                                         $vCount = 1;
-                                                        for($i=0;$i<count($this->vDataBilling);$i++):
+                                                        for($i=0;$i<count($this->DataBillingCiclicProcess);$i++):
+                                                            $date = date_create($this->DataBillingCiclicProcess[$i]['d_billingdate']);
+                                                            $date = date_format($date, 'd/m/Y');                                                
                                                             echo '<tr>';
-                                                                echo '<td>'.$vCount.'</td>';
-                                                                echo '<td>'.$this->vDataBilling[$i]['n_billingnumber'].'</td>';
-                                                                echo '<td>'.$this->vDataBilling[$i]['c_nit'].'</td>';
-                                                                echo '<td>'.$this->vDataBilling[$i]['c_namenit'].'</td>';
-                                                                echo '<td>'.$this->vDataBilling[$i]['d_billingdate'].'</td>';
-                                                                echo '<td>'.$this->vDataBilling[$i]['n_totalamount'].'</td>';
-                                                                echo '<td><a href="'.BASE_VIEW_URL.'systemBilling/invoiceLetter/'.$this->vDataBilling[$i]['n_billingnumber'].'" class="btn green" ><i class="fa fa-print"></i> Visualizar </a></td>';
+                                                                echo '<td>'.$this->DataBillingCiclicProcess[$i]['GRUPO'].'</td>';
+                                                                echo '<td>'.$this->DataBillingCiclicProcess[$i]['c_autorizationcode'].'</td>';
+                                                                echo '<td>'.$this->DataBillingCiclicProcess[$i]['n_billingnumber'].'</td>';
+                                                                echo '<td>'.$this->DataBillingCiclicProcess[$i]['c_controlcode'].'</td>';
+                                                                echo '<td>'.$this->DataBillingCiclicProcess[$i]['c_nit'].'</td>';
+                                                                echo '<td>'.$this->DataBillingCiclicProcess[$i]['c_namenit'].'</td>';
+                                                                echo '<td>'.$date.'</td>';
+                                                                echo '<td>'.$this->DataBillingCiclicProcess[$i]['n_totalamount'].'</td>';
+                                                                echo '<td>'.$this->DataBillingCiclicProcess[$i]['IMPORTE_ICE_IEH_TASAS'].'</td>';
+                                                                echo '<td>'.$this->DataBillingCiclicProcess[$i]['IMPORTE_EXTERNO'].'</td>';
+                                                                echo '<td>'.$this->DataBillingCiclicProcess[$i]['VENTAS_GRAVADAS'].'</td>';
+                                                                echo '<td>'.$this->DataBillingCiclicProcess[$i]['DESCUENTOS_BONIFICACIONES'].'</td>';
+                                                                echo '<td>'.$this->DataBillingCiclicProcess[$i]['PLACA'].'</td>';
+                                                                echo '<td>'.$this->DataBillingCiclicProcess[$i]['PAIS_ORIGEN_PLACA'].'</td>';
+                                                                echo '<td>'.$this->DataBillingCiclicProcess[$i]['TIPO_ENVASE'].'</td>';
+                                                                echo '<td>'.$this->DataBillingCiclicProcess[$i]['TIPO_PRODUCTO'].'</td>';
+                                                                echo '<td>'.$this->DataBillingCiclicProcess[$i]['AUTORIZACION_VENTA'].'</td>';
+                                                                echo '<td>'.$this->DataBillingCiclicProcess[$i]['TIPO_CAMBIO'].'</td>';
+                                                                echo '<td>'.$this->DataBillingCiclicProcess[$i]['TIPO_MONEDA'].'</td>';
                                                             ++$vCount;
                                                         endfor;
                                                     endif;
@@ -74,10 +103,6 @@
                                         </table>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6 ">
-                                <a href="#" class="btn red" id="btnNewBilling"><i class="fa fa-print"></i> Nueva Factura </a>
-                                <a href="<?Php echo BASE_VIEW_URL.'systemBilling/ciclicProcess'; ?>" class="btn blue"><i class="fa fa-gear"></i> Proceso de Ciclos </a>
                             </div>
                         </div>                        
                     </div>

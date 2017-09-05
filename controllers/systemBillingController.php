@@ -405,7 +405,68 @@ class systemBillingController extends IdEnController
                 //return $vArrayFiveDigitVerhoeffNumber;
                 //return print_r($vArrayStringDosingWrenchKey);
                 return $vStringDosingWrenchKey;
-			}    
+			}
+    
+        public function ciclicProcess(){
+            $this->vView->vUserNamesComplete = $this->vUsersData->getUserNamesComplete(IdEnSession::getSession(DEFAULT_USER_AUTHENTICATE.'Code'));
+            
+            $this->vView->DataBillingCiclicProcess = $this->vBillingData->getDataBillingCiclicProcess();
+            
+            $this->vView->visualizar('ciclicProcess');
+        }
+    
+        public function generateFileCiclicProcess(){
+            
+            $this->DataBillingCiclicProcess = $this->vBillingData->getDataBillingCiclicProcess();
+            
+            $vRootFileCreated =  ROOT_APPLICATION.'views'.DIR_SEPARATOR.'backend'.DIR_SEPARATOR.'systemBilling'.DIR_SEPARATOR.'documents'.DIR_SEPARATOR;
+            
+            $nombre_archivo = $vRootFileCreated.'logs.txt'; 
+ 
+            if(file_exists($nombre_archivo)){
+                $mensaje = "El Archivo $nombre_archivo se ha modificado. - ";
+            } else {
+                $mensaje = "El Archivo $nombre_archivo se ha creado. - ";
+            }
+
+            if($archivo = fopen($nombre_archivo, "x")){
+                
+               if(isset($this->DataBillingCiclicProcess) && count($this->DataBillingCiclicProcess)):
+                    $vCount = 1;
+                    for($i=0;$i<count($this->DataBillingCiclicProcess);$i++):
+                        $vBillingData = $this->DataBillingCiclicProcess[$i]['GRUPO'].'|'.
+                        $this->DataBillingCiclicProcess[$i]['c_autorizationcode'].'|'.
+                        $this->DataBillingCiclicProcess[$i]['n_billingnumber'].'|'.
+                        $this->DataBillingCiclicProcess[$i]['c_controlcode'].'|'.
+                        $this->DataBillingCiclicProcess[$i]['c_nit'].'|'.
+                        $this->DataBillingCiclicProcess[$i]['c_namenit'].'|'.
+                        $this->DataBillingCiclicProcess[$i]['d_billingdate'].'|'.
+                        $this->DataBillingCiclicProcess[$i]['n_totalamount'].'|'.
+                        $this->DataBillingCiclicProcess[$i]['IMPORTE_ICE_IEH_TASAS'].'|'.
+                        $this->DataBillingCiclicProcess[$i]['IMPORTE_EXTERNO'].'|'.
+                        $this->DataBillingCiclicProcess[$i]['VENTAS_GRAVADAS'].'|'.
+                        $this->DataBillingCiclicProcess[$i]['DESCUENTOS_BONIFICACIONES'].'|'.
+                        $this->DataBillingCiclicProcess[$i]['PLACA'].'|'.
+                        $this->DataBillingCiclicProcess[$i]['PAIS_ORIGEN_PLACA'].'|'.
+                        $this->DataBillingCiclicProcess[$i]['TIPO_ENVASE'].'|'.
+                        $this->DataBillingCiclicProcess[$i]['TIPO_PRODUCTO'].'|'.
+                        $this->DataBillingCiclicProcess[$i]['AUTORIZACION_VENTA'].'|'.
+                        $this->DataBillingCiclicProcess[$i]['TIPO_CAMBIO'].'|'.
+                        $this->DataBillingCiclicProcess[$i]['TIPO_MONEDA'];
+                        ++$vCount;
+                        fwrite($archivo, $vBillingData.chr(13).chr(10));
+                    endfor;
+                endif;
+                echo $vCount;
+                /*if(fwrite($archivo, $vBillingData)){
+                    fwrite($archivo,chr(13).chr(10));
+                    echo "Se ha ejecutado correctamente.";
+                } else {
+                    echo "Ha habido un problema al crear el archivo.";
+                } */               
+                fclose($archivo);
+            }            
+        }    
     
 	}
 ?>
