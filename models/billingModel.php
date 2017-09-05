@@ -56,6 +56,13 @@ class billingModel extends IdEnModel
 				$vResultActivityServices->close();
 			}    
     
+		public function getDosingWrenchKeys()
+            {
+				$vResultDosingWrenchKeys = $this->vDataBase->query("SELECT * FROM tb_easybilling_dosingwrenchkey ORDER BY tb_easybilling_dosingwrenchkey.n_coddosingwrenchkey DESC;");
+				return $vResultDosingWrenchKeys->fetchAll();
+				$vResultDosingWrenchKeys->close();
+			}
+    
 		public function getCodeDosingWrenchKey()
             {
 				$vResultCodeDosingWrenchKey = $this->vDataBase->query("SELECT
@@ -76,6 +83,13 @@ class billingModel extends IdEnModel
 				$vResultDataDosingWrenchKey->close();
 			}    
     
+		public function getAutorizationCodes()
+            {
+				$vResultAutorizationCodes = $this->vDataBase->query("SELECT * FROM tb_easybilling_autorizationcode ORDER BY tb_easybilling_autorizationcode.n_codautorizationcode DESC;");
+				return $vResultAutorizationCodes->fetchAll();
+				$vResultAutorizationCodes->close();
+			}
+    
 		public function getCodeAutorizationcode()
             {
 				$vResultDataAutorizationcode = $this->vDataBase->query("SELECT
@@ -84,7 +98,7 @@ class billingModel extends IdEnModel
                                                                         WHERE tb_easybilling_autorizationcode.n_active = 1;");
 				return $vResultDataAutorizationcode->fetchColumn();
 				$vResultDataAutorizationcode->close();
-			}
+			}    
     
 		public function getDataAutorizationcode()
             {
@@ -513,6 +527,44 @@ class billingModel extends IdEnModel
 										));
                 return $vResultBillingDetailRegister = $this->vDataBase->lastInsertId();
                 $vResultBillingDetailRegister->close();
+			}
+    
+		public function registerAutorizationCode($vNumAutorization, $vActive){
+            
+                $vNumAutorization = (string) $vNumAutorization;
+                $vActive = (int) $vActive;
+
+                $vUserCreate = (string) IdEnSession::getSession(DEFAULT_USER_AUTHENTICATE.'UserName');
+            
+				$vResultRegisterAutorizationCode = $this->vDataBase->prepare("INSERT INTO tb_easybilling_autorizationcode(c_autorizationcode, n_active, c_usercreate, d_datecreate)
+																VALUES(:c_autorizationcode, :n_active, :c_usercreate, NOW())")
+								->execute(
+										array(
+                                            ':c_autorizationcode' => $vNumAutorization,
+                                            ':n_active' => $vActive,
+                                            ':c_usercreate' => $vUserCreate,
+										));
+                return $vResultRegisterAutorizationCode = $this->vDataBase->lastInsertId();
+                $vResultRegisterAutorizationCode->close();
+			}
+    
+		public function registerDosingWrenchKey($vDosingWrenchKey, $vActive){
+            
+                $vDosingWrenchKey = (string) $vDosingWrenchKey;
+                $vActive = (int) $vActive;
+
+                $vUserCreate = (string) IdEnSession::getSession(DEFAULT_USER_AUTHENTICATE.'UserName');
+            
+				$vResultRegisterDosingWrenchKey = $this->vDataBase->prepare("INSERT INTO tb_easybilling_dosingwrenchkey(c_dosingwrenchkey, n_active, c_usercreate, d_datecreate)
+																VALUES(:c_dosingwrenchkey, :n_active, :c_usercreate, NOW())")
+								->execute(
+										array(
+                                            ':c_dosingwrenchkey' => $vDosingWrenchKey,
+                                            ':n_active' => $vActive,
+                                            ':c_usercreate' => $vUserCreate,
+										));
+                return $vResultRegisterDosingWrenchKey = $this->vDataBase->lastInsertId();
+                $vResultRegisterDosingWrenchKey->close();
 			}    
         /* END INSERT STATEMENT QUERY  */
     
@@ -609,6 +661,58 @@ class billingModel extends IdEnModel
                 return $vResultUpdateBillingControlCode;
                 $vResultUpdateBillingControlCode->close();
 			}
+    
+		public function updateStateAutorizationCodes($vCodAutorizationCode, $vActive)
+            {
+                $vCodAutorizationCode = (int) $vCodAutorizationCode;
+                $vActive = (int) $vActive;
+
+                $vUserMod = (string) IdEnSession::getSession(DEFAULT_USER_AUTHENTICATE.'UserName');
+            
+                $vResultUpdateStateAutorizationCodes = $this->vDataBase->prepare("UPDATE
+                                                                                    tb_easybilling_autorizationcode
+                                                                                SET tb_easybilling_autorizationcode.n_active = :n_active,
+                                                                                    tb_easybilling_autorizationcode.c_usermod = :c_usermod,
+                                                                                    tb_easybilling_autorizationcode.d_datemod = NOW()
+                                                                                WHERE tb_easybilling_autorizationcode.n_codautorizationcode = :n_codautorizationcode
+                                                                                    AND tb_easybilling_autorizationcode.n_active = 1;")
+                                                        ->execute(
+                                                                    array(
+                                                                            ':n_active'=>$vActive,
+                                                                            ':c_usermod'=>$vUserMod,
+                                                                            ':n_codautorizationcode'=>$vCodAutorizationCode
+                                                                         )
+                                                                 );
+            
+                return $vResultUpdateStateAutorizationCodes;
+                $vResultUpdateStateAutorizationCodes->close();
+			}
+    
+		public function updateStateDosingWrenchKey($vCodDosingWrenchKey,$vActive)
+            {
+                $vCodDosingWrenchKey = (int) $vCodDosingWrenchKey;
+                $vActive = (int) $vActive;
+
+                $vUserMod = (string) IdEnSession::getSession(DEFAULT_USER_AUTHENTICATE.'UserName');
+            
+                $vResultUpdateStateAutorizationCodes = $this->vDataBase->prepare("UPDATE
+                                                                                    tb_easybilling_dosingwrenchkey
+                                                                                SET tb_easybilling_dosingwrenchkey.n_active = :n_active,
+                                                                                    tb_easybilling_dosingwrenchkey.c_usermod = :c_usermod,
+                                                                                    tb_easybilling_dosingwrenchkey.d_datemod = NOW()
+                                                                                WHERE tb_easybilling_dosingwrenchkey.n_coddosingwrenchkey = :n_coddosingwrenchkey
+                                                                                    AND tb_easybilling_dosingwrenchkey.n_active = 1;")
+                                                        ->execute(
+                                                                    array(
+                                                                            ':n_active'=>$vActive,
+                                                                            ':c_usermod'=>$vUserMod,
+                                                                            ':n_coddosingwrenchkey'=>$vCodDosingWrenchKey
+                                                                         )
+                                                                 );
+            
+                return $vResultUpdateStateAutorizationCodes;
+                $vResultUpdateStateAutorizationCodes->close();
+			}    
         /* END UPDATE STATEMENT QUERY  */      
     
         /* BEGIN DELETE STATEMENT QUERY  */

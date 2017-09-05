@@ -255,9 +255,19 @@
                                 <ul class="sub-menu">
                                     <li class="nav-item">
                                         <a href="<?Php echo BASE_VIEW_URL; ?>systemBilling" class="nav-link">
-                                            <i class="icon-bar-chart"></i> Emisión de Facturas
+                                            <i class="fa fa-file-o"></i> Emisión de Facturas
                                         </a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a href="<?Php echo BASE_VIEW_URL; ?>systemBilling/autorizationcode" class="nav-link">
+                                            <i class="fa fa-check-circle"></i> Código de Autorización
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="<?Php echo BASE_VIEW_URL; ?>systemBilling/dosingwrenchkey" class="nav-link">
+                                            <i class="fa fa-key"></i> Llave de Dosificación
+                                        </a>
+                                    </li>                                    
                                     <!--<li class="nav-item">
                                         <a href="javascript:;" class="nav-link nav-toggle">
                                             <i class="icon-settings"></i> Item 1

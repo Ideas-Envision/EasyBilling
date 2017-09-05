@@ -34,6 +34,50 @@ class systemBillingController extends IdEnController
                 $this->vView->visualizar('index');
 			}
     
+		public function autorizationcode(){
+                $this->vView->vUserNamesComplete = $this->vUsersData->getUserNamesComplete(IdEnSession::getSession(DEFAULT_USER_AUTHENTICATE.'Code'));
+                
+                $this->vView->vDataAutorizationCodes = $this->vBillingData->getAutorizationCodes();
+            
+                $this->vView->visualizar('autorizationcode');
+			}
+    
+        public function registerAutorizationCode(){
+            if($_SERVER['REQUEST_METHOD'] == 'POST'){
+                $vNumAutorization = (string) $_POST['vNumAutorization'];
+                
+                $vCodAutorizationCode = $this->vBillingData->getCodeAutorizationcode();
+                
+                $this->vBillingData->updateStateAutorizationCodes($vCodAutorizationCode, 0);
+                
+                $vCodAutorizationCode = $this->vBillingData->registerAutorizationCode($vNumAutorization, 1);
+                
+                echo $vCodAutorizationCode;
+            }
+        }
+    
+		public function dosingwrenchkey(){
+                $this->vView->vUserNamesComplete = $this->vUsersData->getUserNamesComplete(IdEnSession::getSession(DEFAULT_USER_AUTHENTICATE.'Code'));
+                
+                $this->vView->vDataDosingWrenchKeys = $this->vBillingData->getDosingWrenchKeys();
+            
+                $this->vView->visualizar('dosingwrenchkey');
+			}
+    
+        public function registerDosingWrenchKey(){
+            if($_SERVER['REQUEST_METHOD'] == 'POST'){
+                $vDosingWrenchKey = (string) $_POST['vDosingWrenchKey'];
+                
+                $vCodDosingWrenchKey = $this->vBillingData->getCodeDosingWrenchKey();
+                
+                $this->vBillingData->updateStateDosingWrenchKey($vCodDosingWrenchKey,0);
+                
+                $vCodDosingWrenchKeyCode = $this->vBillingData->registerDosingWrenchKey($vDosingWrenchKey, 1);
+                
+                echo $vCodDosingWrenchKeyCode;
+            }
+        }    
+    
 		public function registerNewBilling(){
                 if($_SERVER['REQUEST_METHOD'] == 'POST'){
                     
@@ -41,6 +85,7 @@ class systemBillingController extends IdEnController
                     $vCodAutorizationcode = $this->vBillingData->getCodeAutorizationcode();
                     $vNumberBilling = $this->vBillingData->generateNumberBilling() + 1;
                     $vActive = 2;
+                    
                     $vCodeBilling = $this->vBillingData->billingRegister($vCodDosingWrenchKey, $vCodAutorizationcode, $vNumberBilling, $vActive);
                     
                     echo $vCodeBilling;
